@@ -1,179 +1,153 @@
+# ---------------------------------------------------------
+# GradeBook Analyzer
+# Name: Your Name
+# Date: 2025
+# Description: Program to input student marks, calculate
+# statistics, assign grades, filter pass/fail, and display
+# results in a formatted table.
+# ---------------------------------------------------------
 
-#SHREYA CHAUHAN
-#GRADEBOOK Analyzer
-#10 november 2025
-print("""\n--- Welcome to the Simple Gradebook Analyzer!
-    This program helps you analyze student marks.
-    \n\t\t  --- Main Menu ---\n
-    \t1. Enter student grades manually\n
-    \t2. Analyze and Display Results\n
-    \t3. Exit""")
-def choice():
-    while True:#Gets a correct menu choice from the user
-        choice = input("Please choose an option (1, 2, or 3): ").strip()
-        if choice in ['1', '2', '3']:
-            return choice
+import statistics
+
+# ---------------------------
+# Task 3: Statistical Functions
+# ---------------------------
+
+def calculate_average(marks_dict):
+    return sum(marks_dict.values()) / len(marks_dict)
+
+def calculate_median(marks_dict):
+    return statistics.median(marks_dict.values())
+
+def find_max_score(marks_dict):
+    return max(marks_dict.values())
+
+def find_min_score(marks_dict):
+    return min(marks_dict.values())
+
+
+# ---------------------------
+# Task 4: Grade Assignment
+# ---------------------------
+
+def assign_grades(marks_dict):
+    grades = {}
+    for name, mark in marks_dict.items():
+        if mark >= 90:
+            grades[name] = "A"
+        elif mark >= 80:
+            grades[name] = "B"
+        elif mark >= 70:
+            grades[name] = "C"
+        elif mark >= 60:
+            grades[name] = "D"
         else:
-            print("Invalid choice. Please enter the options given")
-def get_manual_grades():#Allows manual entry of student names and marks.
-    marks = {}
-    print("""\n \tManual Grade Entry
-    Enter student names and marks. Type 'finished' for name to finish.""")  # <- matched to 'finished'
+            grades[name] = "F"
+    return grades
+
+
+# ---------------------------
+# Task 5: Pass/Fail Filter
+# ---------------------------
+
+def pass_fail_filter(marks_dict):
+    passed_students = [name for name, m in marks_dict.items() if m >= 40]
+    failed_students = [name for name, m in marks_dict.items() if m < 40]
+    return passed_students, failed_students
+
+
+# ---------------------------
+# Task 6: Results Table
+# ---------------------------
+
+def print_results_table(marks_dict, grades_dict):
+    print("\n----------------------------------------")
+    print(f"{'Name':<15}{'Marks':<10}{'Grade'}")
+    print("----------------------------------------")
+
+    for name, mark in marks_dict.items():
+        print(f"{name:<15}{mark:<10}{grades_dict[name]}")
+
+    print("----------------------------------------")
+
+
+# ---------------------------
+# Task 1 & 2: Main Program Loop
+# ---------------------------
+
+def main():
+    print("=====================================")
+    print("      Welcome to GradeBook Analyzer")
+    print("=====================================")
 
     while True:
-        name = input("Enter student name ,when finished enter 'finished' ").strip()
-        if name.lower() == 'finished':
+        print("\nMenu:")
+        print("1. Enter Student Data")
+        print("2. Show Statistics")
+        print("3. Show Grades")
+        print("4. Show Pass/Fail")
+        print("5. Show Results Table")
+        print("6. Exit")
+
+        choice = input("\nEnter your choice: ")
+
+        if choice == "1":
+            marks = {}
+            n = int(input("How many students? "))
+
+            for _ in range(n):
+                name = input("Enter student name: ")
+                mark = int(input("Enter marks: "))
+                marks[name] = mark
+
+            print("\nData stored successfully!")
+
+        elif choice == "2":
+            if not marks:
+                print("Enter data first!")
+                continue
+
+            print("\nAverage:", calculate_average(marks))
+            print("Median:", calculate_median(marks))
+            print("Highest Score:", find_max_score(marks))
+            print("Lowest Score:", find_min_score(marks))
+
+        elif choice == "3":
+            if not marks:
+                print("Enter data first!")
+                continue
+
+            grades = assign_grades(marks)
+            print("\nGrades Assigned:")
+            for name, g in grades.items():
+                print(name, ":", g)
+
+        elif choice == "4":
+            if not marks:
+                print("Enter data first!")
+                continue
+
+            passed, failed = pass_fail_filter(marks)
+
+            print("\nPassed Students:", passed, f"({len(passed)})")
+            print("Failed Students:", failed, f"({len(failed)})")
+
+        elif choice == "5":
+            if not marks:
+                print("Enter data first!")
+                continue
+
+            grades = assign_grades(marks)
+            print_results_table(marks, grades)
+
+        elif choice == "6":
+            print("\nExiting program... Goodbye!")
             break
 
-        if not name:
-            print("Please enter something")
-            continue
-
-        while True:
-            try:
-                marks_str = input(f"Enter mark for {name} (0-100): ")
-                mark = int(marks_str)
-
-                if 0 <= mark <= 100:
-                    marks[name] = mark
-                    break
-                else:
-                    print("Mark must be between 0 and 100.")
-            except ValueError:
-                print("Invalid input,enter a correct number")
-    return marks
-def check(marks):
-    if not marks:
-        print("\nNo student data to analyze.")
-        return {}
-def calculate_avg(marks): # To find Average Score
-    mark_list = list(marks.values())
-    students = len(mark_list)
-    if students == 0:
-        print("Total students: 0")
-        print("Average score: N/A")
-        return
-    average = sum(mark_list) / students
-    print(f"Total students: {students}")
-    print(f"Average score: {average:.2f}")
-def calculate_median(mark_list,students):# To find Median Score
-    sorted_marks = sorted(mark_list)
-    mid = students // 2
-    if students % 2 == 0:
-        median = (sorted_marks[mid - 1] + sorted_marks[mid]) / 2
-    else:
-        median = float(sorted_marks[mid])
-    print(f"Median score: {median:.2f}")
-def find_max_score(marks):
-    if not marks:
-        print("Maximum score: N/A")
-        return
-    max_score = max(marks.values())   # <- use values
-    print(f"Maximum score: {max_score}")
-
-def find_min_score(marks):
-    if not marks:
-        print("Minimum score: N/A")
-        return
-    min_score = min(marks.values())   # <- use values
-    print(f"Minimum score: {min_score}")
-    # Function to assign grade based on marks
-def get_grade(marks):  # <- single parameter (score)
-    if marks >= 90:
-        return "A"
-    elif marks >= 80:
-        return "B"
-    elif marks >= 70:
-        return "C"
-    elif marks >= 60:
-        return "D"
-    else:
-        return "F"
-
-def grade_counter(marks,students):
-    # Dictionary to store the grades
-    grades = {}
-
-    # Assign grades to each student
-    for students, mark in marks.items():
-        grades[students] = get_grade(mark)  # <- matches new signature
-
-    print("Grades:", grades)
-
-    # Count how many in each grade
-    grade_count = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
-
-    for grade in grades.values():
-        grade_count[grade] += 1
-
-    print("Grade Count:", grade_count)
-    return grades 
-def seperator(marks,grades):
-    passing_score = 40
-    passed_students = [name for name, mark in marks.items() if mark >= passing_score]
-    failed_students = [name for name, mark in marks.items() if mark < passing_score]
-
-    print(f"\n--- Pass/Fail Summary (Passing score: {passing_score}) ---")
-    print(f"Passed students ({len(passed_students)}): {', '.join(sorted(passed_students)) if passed_students else 'None'}")
-    print(f"Failed students ({len(failed_students)}): {', '.join(sorted(failed_students)) if failed_students else 'None'}")
-
-    return grades # Return the grades for the table
-def result_table(marks,grades):
-     print("\n--- Detailed Student Results Table ---")
-     if not marks:
-         print("No student data to display in the table.")
-         return
-
-     max_name_len = max(len("Name"), *(len(name) for name in marks.keys()))
-     mark_col_width = max(len("Marks"), 3)
-     grade_col_width = max(len("Grade"), 1)
-
-     header_line = f"{{:<{max_name_len}}} {{:>{mark_col_width}}} {{:>{grade_col_width}}}"
-     print(header_line.format("Name", "Marks", "Grade"))
-     print("-" * (max_name_len + mark_col_width + grade_col_width + 6))
-     for name in sorted(marks.keys()):
-        mark = marks[name]
-        grade = grades.get(name, 'N/A')
-        print(header_line.format(name, mark, grade))
-     print("-" * (max_name_len + mark_col_width + grade_col_width + 6))
-def main():
-    while True:  # whole program loop
-        marks = {}   # stores all student marks
-
-        while True:
-            user_choice = choice()   # get menu choice
-
-            if user_choice == '1':
-                # enter marks manually
-                marks = get_manual_grades()
-
-            elif user_choice == '2':
-                # analyze results
-                if not marks:
-                    print("\nNo student data to analyze.")
-                    continue
-
-                mark_list = list(marks.values())
-                students = len(mark_list)
-
-                print("\n--- Analysis Results ---")
-                calculate_avg(marks)
-                calculate_median(mark_list, students)
-                find_max_score(marks)
-                find_min_score(marks)
-
-                grades = grade_counter(marks, students)
-                grades = seperator(marks, grades)
-                result_table(marks, grades)
-
-            elif user_choice == '3':
-                print("Exiting to main program...")
-                break   # reruns program
+        else:
+            print("Invalid choice! Try again.")
 
 
-        again = input("\nDo you want to run the program again? (yes/no): ").strip().lower()
-        if again not in ('yes', 'y'):
-            print("Goodbye!")
-            break
-
-main()
+# Run program
+if __name__ == "__main__":
+    main()
