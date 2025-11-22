@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # GradeBook Analyzer
-# Name: Your Name
-# Date: 2025
+# Name: SHREYA CHAUHAN
+# Date:10NOV,2025
 # Description: Program to input student marks, calculate
 # statistics, assign grades, filter pass/fail, and display
 # results in a formatted table.
@@ -151,3 +151,4 @@ def main():
 # Run program
 if __name__ == "__main__":
     main()
+
